@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Health Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --bg-color: #f0f4f8;
+    --card-bg: rgb(0, 0, 0, 0.7);
+    --text-main: rgb(255, 195, 85);
+    --text-light: rgb(255, 255, 255);
+    --primary: rgb(255, 195, 85);
+    --primary-hover: rgb(255, 165, 0);
+    
+    /* Status Colors */
+    --good: #48bb78;
+    --warning: #ed8936;
+    --danger: #e53e3e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-image: url('0_iGf1IHziAEnGW7xN.jpg');
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    transition: background-image 0.5s ease-in-out;
+    padding: 2rem;
+}
+
+.container {
+    background: var(--card-bg);
+    max-width: 900px;
+    width: 100%;
+    padding: 40px 50px;
+    border-radius: 50px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    color: var(--primary);
+    font-size: 2.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.header p {
+    color: var(--text-light);
+}
+
+/* Model Selection Area */
+.model-selection-wrapper {
+    background: rgb(255, 255, 255, 0.8);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border-left: 5px solid var(--primary);
+}
+
+.model-selection-wrapper label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--primary-hover);
+}
+
+.model-selection-wrapper select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid orange;
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: rgb(255, 195, 85);
+    cursor: pointer;
+}
+
+/* Form Grid Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.input-group label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--text-main);
+}
+
+.input-group input, 
+.input-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: 0.3s;
+    background: rgb(248, 250, 252, 0.7);
+}
+
+.input-group input:focus, 
+.input-group select:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary);
+    color: rgb(54, 11, 11);
+    border: none;
+    border-radius: 100px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* Prediction Result UI */
+.result-container {
+    max-width: 500px;
+    text-align: center;
+}
+
+.result-card {
+    font-size: 1.3rem;
+    padding: 2rem;
+    border-radius: 15px;
+    border-top: 8px solid var(--primary);
+}
+
+.model-used {
+    color: var(--text-light);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.model-used span {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.battery-visual h1 {
+    font-size: 4rem;
+    margin-bottom: 0;
+}
+
+.action-box {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: #f7fafc;
+}
+
+.action-box h3 {
+    color: var(--text-light);
+    font-weight: 400;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.recommendation-text {
+    font-size: 2.1rem;
+    font-weight: 600;
+}
+
+.back-btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px 25px;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: var(--primary);
+    color: rgb(54, 11, 11);
+}
+
+/* Dynamic Status Colors for Results Page */
+.status-good .battery-visual h1, .status-good .recommendation-text { color: var(--good); }
+.status-good { border-top-color: var(--good); }
+
+.status-warning .battery-visual h1, .status-warning .recommendation-text { color: var(--warning); }
+.status-warning { border-top-color: var(--warning); }
+
+.status-danger .battery-visual h1, .status-danger .recommendation-text { color: var(--danger); }
+.status-danger { border-top-color: var(--danger); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>⚡ Smartphone Battery Health Predictor</h1>
+            <p>Enter device usage statistics to estimate battery degradation and get actionable recommendations.</p>
+        </header>
+
+        <form action="/predict" method="POST" class="prediction-form">
+            
+            <div class="model-selection-wrapper">
+                <label for="model_selection">🧠 Select Predictive Model</label>
+                <select name="model_selection" id="model_selection" required>
+                    <optgroup label="Machine Learning Models">
+                        <option value="ML|Random_Forest_Regressor">Random Forest Regressor</option>
+                        <option value="ML|AdaBoost_Regressor">AdaBoost Regressor</option>
+                        <option value="ML|Gradient_Boosting_Regressor">Gradient Boosting Regressor</option>
+                        <option value="ML|XGBoost_Regressor">XGBoost Regressor</option>
+                        <option value="ML|XGBoost_RF-Booster">XGBoost RF-Booster</option>
+                        <option value="ML|LightGBM_Regressor">LightGBM Regressor</option>
+                        <option value="ML|CatBoost_Regressor">CatBoost Regressor</option>
+                    </optgroup>
+                    <optgroup label="Hybrid Deep Learning Models">
+                        <option value="DL|DNN_Model" selected>Deep Neural Network (DNN)</option>
+                        <option value="DL|CNN_LSTM_Model">CNN-LSTM</option>
+                        <option value="DL|CNN_BiLSTM_Model">CNN-BiLSTM</option>
+                        <option value="DL|CNN_GRU_Model">CNN-GRU</option>
+                        <option value="DL|CNN_BiGRU_Model">CNN-BiGRU</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Device Age (Months)</label>
+                    <input type="number" name="device_age_months" required>
+                </div>
+                <div class="input-group">
+                    <label>Battery Capacity (mAh)</label>
+                    <input type="number" name="battery_capacity_mah" required>
+                </div>
+                <div class="input-group">
+                    <label>Avg Screen On (Hrs/Day)</label>
+                    <input type="number" step="0.1" name="avg_screen_on_hours_per_day" required>
+                </div>
+                <div class="input-group">
+                    <label>Charging Cycles / Week</label>
+                    <input type="number" step="0.1" name="avg_charging_cycles_per_week" required>
+                </div>
+                <div class="input-group">
+                    <label>Avg Battery Temp (°C)</label>
+                    <input type="number" step="0.1" name="avg_battery_temp_celsius" required>
+                </div>
+                <div class="input-group">
+                    <label>Fast Charging Usage (%)</label>
+                    <input type="number" step="0.1" name="fast_charging_usage_percent" required>
+                </div>
+                <div class="input-group">
+                    <label>Overnight Charging / Week</label>
+                    <input type="number" name="overnight_charging_freq_per_week" required>
+                </div>
+                <div class="input-group">
+                    <label>Gaming (Hrs/Week)</label>
+                    <input type="number" step="0.1" name="gaming_hours_per_week" required>
+                </div>
+                <div class="input-group">
+                    <label>Video Streaming (Hrs/Week)</label>
+                    <input type="number" step="0.1" name="video_streaming_hours_per_week" required>
+                </div>
+                <div class="input-group">
+                    <label>Charging Habit Score</label>
+                    <input type="number" step="0.1" name="charging_habit_score" required>
+                </div>
+                <div class="input-group">
+                    <label>Usage Intensity Score</label>
+                    <input type="number" step="0.1" name="usage_intensity_score" required>
+                </div>
+                <div class="input-group">
+                    <label>Thermal Stress Index</label>
+                    <input type="number" step="0.01" name="thermal_stress_index" required>
+                </div>
+                <div class="input-group">
+                    <label>Background App Usage</label>
+                    <select name="background_app_usage_level" required>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Signal Strength Avg</label>
+                    <select name="signal_strength_avg" required>
+                        <option value="Poor">Poor</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="Good">Good</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Diagnose Battery Health</button>
+        </form>
+    </div>
+</body>
+</html>

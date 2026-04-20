@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Health Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>⚡ Smartphone Battery Health Predictor</h1>
+            <p>Enter device usage statistics to estimate battery degradation and get actionable recommendations.</p>
+        </header>
+
+        <form action="/predict" method="POST" class="prediction-form">
+            
+            <div class="model-selection-wrapper">
+                <label for="model_selection">🧠 Select Predictive Model</label>
+                <select name="model_selection" id="model_selection" required>
+                    <optgroup label="Machine Learning Models">
+                        <option value="ML|Linear-Regressor_Model">Linear Regressor</option>
+                        <option value="ML|RandomForest-Regressor_Model">Random Forest Regressor</option>
+                        <option value="ML|AdaBoost-Regressor_Model">AdaBoost Regressor</option>
+                        <option value="ML|GradientBoosting-Regressor_Model">Gradient Boosting Regressor</option>
+                        <option value="ML|XGBoost-Regressor_Model">XGBoost Regressor</option>
+                        <option value="ML|XGBoostRF-Booster_Model">XGBoost RF-Booster</option>
+                        <option value="ML|LightGBM-Regressor_Model">LightGBM Regressor</option>
+                        <option value="ML|CatBoost-Regressor_Model">CatBoost Regressor</option>
+                    </optgroup>
+                    <optgroup label="Deep Learning Models">
+                        <option value="DL|DNN_Model" selected>Deep Neural Network (DNN)</option>
+                        <option value="DL|CNN-LSTM_Model">CNN-LSTM</option>
+                        <option value="DL|CNN-BiLSTM_Model">CNN-BiLSTM</option>
+                        <option value="DL|CNN-GRU_Model">CNN-GRU</option>
+                        <option value="DL|CNN-BiGRU_Model">CNN-BiGRU</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Device Age (Months)</label>
+                    <input type="number" name="device_age_months" required>
+                </div>
+                <div class="input-group">
+                    <label>Battery Capacity (mAh)</label>
+                    <input type="number" name="battery_capacity_mah" required>
+                </div>
+                <div class="input-group">
+                    <label>Avg Screen On (Hrs/Day)</label>
+                    <input type="number" step="0.1" name="avg_screen_on_hours_per_day" required>
+                </div>
+                <div class="input-group">
+                    <label>Charging Cycles / Week</label>
+                    <input type="number" step="0.1" name="avg_charging_cycles_per_week" required>
+                </div>
+                <div class="input-group">
+                    <label>Avg Battery Temp (°C)</label>
+                    <input type="number" step="0.1" name="avg_battery_temp_celsius" required>
+                </div>
+                <div class="input-group">
+                    <label>Fast Charging Usage (%)</label>
+                    <input type="number" step="0.1" name="fast_charging_usage_percent" required>
+                </div>
+                <div class="input-group">
+                    <label>Overnight Charging / Week</label>
+                    <input type="number" name="overnight_charging_freq_per_week" required>
+                </div>
+                <div class="input-group">
+                    <label>Gaming (Hrs/Week)</label>
+                    <input type="number" step="0.1" name="gaming_hours_per_week" required>
+                </div>
+                <div class="input-group">
+                    <label>Video Streaming (Hrs/Week)</label>
+                    <input type="number" step="0.1" name="video_streaming_hours_per_week" required>
+                </div>
+                <div class="input-group">
+                    <label>Charging Habit Score</label>
+                    <input type="number" step="0.1" name="charging_habit_score" required>
+                </div>
+                <div class="input-group">
+                    <label>Usage Intensity Score</label>
+                    <input type="number" step="0.1" name="usage_intensity_score" required>
+                </div>
+                <div class="input-group">
+                    <label>Thermal Stress Index</label>
+                    <input type="number" step="0.01" name="thermal_stress_index" required>
+                </div>
+                <div class="input-group">
+                    <label>Background App Usage</label>
+                    <select name="background_app_usage_level" required>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Signal Strength Avg</label>
+                    <select name="signal_strength_avg" required>
+                        <option value="Poor">Poor</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="Good">Good</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Diagnose Battery Health</button>
+        </form>
+    </div>
+</body>
+</html>

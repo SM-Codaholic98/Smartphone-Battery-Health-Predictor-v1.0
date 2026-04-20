@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container result-container">
+        <div class="result-card {{ status_class }}">
+            <h2>Prediction Complete</h2>
+            <p class="model-used">Model: <span>{{ model_name }}</span></p>
+            
+            <div class="battery-visual">
+                <h1>{{ prediction }}%</h1>
+                <p>Estimated Battery Health</p>
+            </div>
+
+            <div class="action-box">
+                <h3>{{ icon }} Recommended Action:</h3>
+                <h2 class="recommendation-text">{{ recommendation }}</h2>
+            </div>
+
+            <a href="/" class="back-btn">Evaluate Another Device</a>
+        </div>
+    </div>
+</body>
+</html>
