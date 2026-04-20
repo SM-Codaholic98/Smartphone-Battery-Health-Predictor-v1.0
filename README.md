@@ -62,6 +62,42 @@ To capture complex, non-linear, and sequential relationships within the tabular 
       * **CNN-LSTM** & **CNN-BiLSTM**
       * **CNN-GRU** & **CNN-BiGRU**
 
+### The Deep Learning Paradigm: Why Hybrid Architectures on Tabular Data?
+
+While ensemble Machine Learning models are traditional favorites for tabular data, this project explores a highly advanced Deep Learning approach. By reshaping the 1D tabular row `(14 features)` into a 3D tensor sequence `(14 Timesteps, 1 Channel)`, the network is forced to treat the feature variables as a continuous signal. This allows Convolutional layers to extract hidden localized correlations (e.g., matching battery temp with gaming hours) and Recurrent layers to process the culmination of these stresses, mapping out complex dependencies that decision trees might miss.
+
+**Architecture Breakdown & Layer Roles:**
+
+  * **`Reshape` Layer:** Tricks the network into treating flat CSV data as a spatial/sequential signal, enabling CNN and RNN processing.
+  * **`Conv1D` (1D Convolution):** Acts as an automated feature extractor. It slides a filter across adjacent tabular variables to map out hidden, high-level structural correlations.
+  * **`MaxPooling1D`:** Downsamples the convolutional feature map. It retains only the strongest signals (reducing noise) and drastically shrinks the parameter count to actively prevent overfitting on small datasets.
+  * **`BatchNormalization`:** Standardizes the inputs passing between layers, stabilizing the gradient flow and significantly accelerating the training of these deep hybrid networks.
+  * **`LSTM` & `GRU` (Recurrent Layers):** Processes the compressed feature map sequentially. They maintain an internal "memory," understanding how the sequence of different device parameters culminates in battery degradation. GRUs are computationally lighter, while LSTMs feature a more complex cell state for deeper dependencies.
+  * **`BiLSTM` & `BiGRU` (Bidirectional Wrappers):** Processes the feature sequence in both forward and backward directions. This provides the network with "full context"—allowing it to understand a feature's impact relative to both the variables preceding it and succeeding it in the tensor.
+  * **`Dropout` (0.2):** Randomly disables 20% of neurons during training, forcing the network to learn robust, redundant patterns rather than memorizing the training data.
+  * **`Dense` (Fully Connected):** The final decision-makers. They take the high-level sequential representations extracted by the CNNs and RNNs, flatten them, and condense them through a `256 -> 128 -> 64 -> 1` unit hierarchy to output a continuous numerical prediction.
+
+-----
+
+## 📈 Model Performance & Evaluation Metrics
+
+All models were evaluated on the 30% unseen testing data using the **R²-Score (Coefficient of Determination)**. The models demonstrate exceptional performance, with CatBoost leading the Machine Learning baseline, and the customized `DNN` providing the tightest generalization among the deep learning models.
+
+| Model Architecture | Category | Train R²-Score | Test R²-Score |
+| :--- | :--- | :--- | :--- |
+| **CatBoost Regressor** | **ML** | **0.9873** | **0.9645** |
+| Gradient Boosting Regressor | ML | 0.9728 | 0.9635 |
+| **DNN (Deep Neural Network)** | **DL** | **0.9694** | **0.9628** |
+| LightGBM Regressor | ML | 0.9856 | 0.9613 |
+| Random Forest Regressor | ML | 0.9941 | 0.9579 |
+| XGBoost Regressor | ML | 0.9967 | 0.9572 |
+| CNN-BiGRU | DL | 0.9692 | 0.9505 |
+| **CNN-GRU** | **DL** | **0.9705** | **0.9560** |
+| CNN-BiLSTM | DL | 0.9694 | 0.9497 |
+| CNN-LSTM | DL | 0.9695 | 0.9541 |
+| XGBoost RF-Booster | ML | 0.9564 | 0.9424 |
+| AdaBoost Regressor | ML | 0.9344 | 0.9276 |
+
 -----
 
 ## 🌐 Web Application Features
