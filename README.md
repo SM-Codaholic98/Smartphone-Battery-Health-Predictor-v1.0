@@ -1,11 +1,6 @@
-\<div align="center"\>
-
 # ⚡ Smartphone Battery Health Predictor v1.0
 
 **An Advanced Machine Learning & Deep Learning Pipeline + Web Application for Predictive Battery Degradation Analysis**
-
-\</div\>
-
 -----
 
 ## 📖 Project Overview
